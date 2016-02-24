@@ -34,20 +34,22 @@ public class ElasticsearchTweetController {
             // NOTE: I'm a making a huge assumption here, that only the first search term
             // will be used.
 
-            Search search = new Search.Builder(search_strings[0])
+            String string = "{\"query\":{\"term\":{\"message\":\"" + search_strings[0] + "\"}}}";
+
+            Search search = new Search.Builder(string)
                     .addIndex("testing")
                     .addType("tweet")
                     .build();
 
             try {
-                SearchResult execute = client.execute(search);
-                if(execute.isSucceeded()) {
+                SearchResult result = client.execute(search);
+                if(result.isSucceeded()) {
                     // Return our list of tweets
-                    List<NormalTweet> returned_tweets = execute.getSourceAsObjectList(NormalTweet.class);
+                    List<NormalTweet> returned_tweets = result.getSourceAsObjectList(NormalTweet.class);
                     tweets.addAll(returned_tweets);
                 } else {
                     // TODO: Add an error message, because that other thing was puzzling.
-                    // TODO: Right here it will trigger if the search fails
+                    // TODO: Right here it will trigger if the search failshello
                     Log.i("TODO", "We actually failed here, searching for tweets");
                 }
             } catch (IOException e) {
