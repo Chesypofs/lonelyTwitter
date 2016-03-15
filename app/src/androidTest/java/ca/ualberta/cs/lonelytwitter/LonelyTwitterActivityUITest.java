@@ -25,31 +25,30 @@ public class LonelyTwitterActivityUITest extends ActivityInstrumentationTestCase
         super.setUp();
         instrumentation = getInstrumentation();
         activity = getActivity();
-        textInput = ((EditText) activity.findViewById(ca.ualberta.cs.lonelytwitter.R.id.body));
+        textInput = ((EditText) activity.findViewById(ca.ualberta.cs.lonelytwitter.R.id.tweetMessage));
     }
 
     //makeTweet(text) fills in the input text field and clicks the 'save' button for the activity under test:
     private void makeTweet(String text) {
-        assertNotNull(activity.findViewById(ca.ualberta.cs.lonelytwitter.R.id.save));
+        assertNotNull(activity.findViewById(ca.ualberta.cs.lonelytwitter.R.id.saveButton));
         textInput.setText(text);
-        ((Button) activity.findViewById(ca.ualberta.cs.lonelytwitter.R.id.save)).performClick();
+        ((Button) activity.findViewById(ca.ualberta.cs.lonelytwitter.R.id.saveButton)).performClick();
     }
 
-    //
-    //
     @UiThreadTest
     public void testMakeTweet() {
         LonelyTwitterActivity lta = (LonelyTwitterActivity) getActivity();
         int oldLength = lta.getAdapter().getCount();
+
         makeTweet("test string");
         ArrayAdapter<Tweet> arrayAdapter = lta.getAdapter();
-        assertEquals(oldLength+1, arrayAdapter.getCount());
+        assertEquals(oldLength + 1, arrayAdapter.getCount());
 
         assertTrue("Did you add a Tweet object?",
-                arrayAdapter.getItem(arrayAdapter.getCount()-1) instanceof Tweet);
-        Tweet tweet = arrayAdapter.getItem(arrayAdapter.getCount()-1);
-        assertEquals("This is not the text we expected!", tweet.getMessage(), "test String");
+                arrayAdapter.getItem(arrayAdapter.getCount() - 1) instanceof Tweet);
+
+        Tweet tweet = arrayAdapter.getItem(arrayAdapter.getCount() - 1);
+        assertEquals("This is not the text we expected!", tweet.getMessage(),
+                "test string");
     }
-    //
-    //
 }
