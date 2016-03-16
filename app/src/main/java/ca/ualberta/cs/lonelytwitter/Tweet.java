@@ -11,7 +11,7 @@ import java.util.Date;
 
 import io.searchbox.annotations.JestId;
 
-public abstract class Tweet {
+public abstract class Tweet implements Comparable<Tweet> {
     @JestId
     protected String id;
 
@@ -25,8 +25,14 @@ public abstract class Tweet {
 
     protected Date date;
     protected String message;
+    protected transient Bitmap thumbnail;
+    protected String thumbnailBase64;
 
-
+    public Tweet(Date date, String message, Bitmap thumbnail) {
+        this.date = date;
+        this.message = message;
+        this.thumbnail = thumbnail;
+    }
     public Tweet(Date date, String message) {
         this.date = date;
         this.message = message;
@@ -69,5 +75,23 @@ public abstract class Tweet {
             }
         }
         return date.toString() + " | " + message;
+    }
+
+    public void addThumbnail(Bitmap thumbnail) {
+        if (thumbnail != null) {
+            this.thumbnail = thumbnail;
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            thumbnail.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+            byte[] b = byteArrayOutputStream.toByteArray();
+            thumbnailBase64 = Base64.encodeToString(b, Base64.DEFAULT);
+        }
+    }
+
+    public Bitmap getThumbnail() {
+        if (this.thumbnail == null && thumbnailBase64 != null) {
+            byte[] decodeString = Base64.decode(thumbnailBase64, Base64.DEFAULT);
+            this.thumbnail = BitmapFactory.decodeByteArray(decodeString, 0, decodeString.length);
+        }
+        return this.thumbnail;
     }
 }
