@@ -11,7 +11,7 @@ import java.util.Date;
 
 import io.searchbox.annotations.JestId;
 
-public abstract class Tweet implements Comparable<Tweet> {
+public abstract class Tweet {
     @JestId
     protected String id;
 
